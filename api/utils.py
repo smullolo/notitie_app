@@ -36,3 +36,7 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 def generate_expiry():
     return timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
+
+def generate_payload(token):
+    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
