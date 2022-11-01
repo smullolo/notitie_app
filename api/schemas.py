@@ -2,6 +2,15 @@ from typing import List, Union
 from pydantic import BaseModel
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Union[str, None] = None
+
+
 class NoteBase(BaseModel):
     title: str
     description: Union[str, None] = None
@@ -21,7 +30,7 @@ class Note(NoteBase):
 
 
 class UserBase(BaseModel):
-    email: str
+    username: str
 
 
 class UserCreate(UserBase):
@@ -31,6 +40,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     is_active: bool
+    hashed_password: str
     notes: List[Note] = []
 
     class Config:
