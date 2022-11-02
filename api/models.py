@@ -1,4 +1,5 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -20,7 +21,7 @@ class Note(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String, index=True)
-    last_edit = Column(Date)
+    last_edit = Column(DateTime(timezone=True), onupdate=func.now())
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="notes")

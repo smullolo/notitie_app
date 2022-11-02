@@ -14,7 +14,6 @@ class TokenData(BaseModel):
 class NoteBase(BaseModel):
     title: str
     description: Union[str, None] = None
-    last_edit: str
 
 
 class NoteCreate(NoteBase):

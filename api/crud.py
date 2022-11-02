@@ -24,8 +24,9 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-def get_notes(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Note).offset(skip).limit(limit).all()
+def get_notes(db: Session, current_user_id, skip: int = 0, limit: int = 100):
+    return db.query(models.Note).filter(models.Note.owner_id == current_user_id).offset(skip).limit(limit).all()
+    # return db.query(models.Note).offset(skip).limit(limit).all()
 
 
 def create_user_note(db: Session, note: schemas.NoteCreate, user_id: int):

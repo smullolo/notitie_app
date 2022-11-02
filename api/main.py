@@ -103,6 +103,16 @@ def create_note_for_user(user_id: int, note: schemas.NoteCreate, db: Session = D
 
 
 @app.get("/notes/", response_model=List[schemas.Note])
-def read_notes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    notes = crud.get_notes(db, skip=skip, limit=limit)
+def read_notes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_active_user)):
+    user_id = current_user.id
+
+    notes = crud.get_notes(db, user_id, skip=skip, limit=limit)
     return notes
+
+# GET /notes return list of notes belonging only to current user.
+
+# POST /notes/ create a note belonging to current user
+
+# PUT /notes/<id> update a specific note from the current user
+
+# DELETE /notes/id DELETE specific note from current user and return 204
