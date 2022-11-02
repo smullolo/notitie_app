@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional
 from pydantic import BaseModel
 
 
@@ -26,6 +26,11 @@ class Note(NoteBase):
 
     class Config:
         orm_mode = True
+
+
+class NoteUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Union[str, None] = None
 
 
 class UserBase(BaseModel):

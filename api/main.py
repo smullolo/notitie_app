@@ -97,11 +97,6 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.post("/users/{user_id}/notes/", response_model=schemas.Note)
-def create_note_for_user(user_id: int, note: schemas.NoteCreate, db: Session = Depends(get_db)):
-    return crud.create_user_note(db=db, note=note, user_id=user_id)
-
-
 @app.get("/notes/", response_model=List[schemas.Note])
 def read_notes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_active_user)):
     user_id = current_user.id
@@ -109,10 +104,20 @@ def read_notes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), c
     notes = crud.get_notes(db, user_id, skip=skip, limit=limit)
     return notes
 
-# GET /notes return list of notes belonging only to current user.
 
-# POST /notes/ create a note belonging to current user
+@app.post("/notes/", response_model=schemas.Note)
+def create_note_for_current_user(note: schemas.NoteCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_active_user)):
+    user_id = current_user.id
+    return crud.create_user_note(db=db, note=note, user_id=user_id)
 
-# PUT /notes/<id> update a specific note from the current user
 
-# DELETE /notes/id DELETE specific note from current user and return 204
+@app.put("/notes/{note_id}", response_model=schemas.Note)
+def update_specific_note_for_current_user(note_id: int, note: schemas.NoteUpdate, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_active_user)):
+    user_id = current_user.id
+    return crud.update_user_note(db=db, note=note, user_id=user_id, note_id=note_id)
+
+
+@app.delete("/notes/{note_id}", status_code=204)
+def update_specific_note_for_current_user(note_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_active_user)):
+    user_id = current_user.id
+    return crud.delete_user_note(db=db, user_id=user_id, note_id=note_id)
