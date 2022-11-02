@@ -2,11 +2,13 @@ from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas, utils
 from .database import SessionLocal, engine
 from jose import JWTError
+from datetime import datetime
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -98,7 +100,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/notes/", response_model=List[schemas.Note])
-def read_notes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_active_user)):
+def read_notes(skip: int = 0, limit: int = 100, start_time: datetime = datetime.min, end_time: datetime = datetime.max, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_active_user)):
     user_id = current_user.id
 
     notes = crud.get_notes(db, user_id, skip=skip, limit=limit)

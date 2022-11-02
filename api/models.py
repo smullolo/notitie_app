@@ -21,7 +21,7 @@ class Note(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String, index=True)
-    last_edit = Column(DateTime(timezone=True), onupdate=func.now())
+    last_edit = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="notes")

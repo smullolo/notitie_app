@@ -1,5 +1,6 @@
 from typing import List, Union, Optional
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class Token(BaseModel):
@@ -23,6 +24,7 @@ class NoteCreate(NoteBase):
 class Note(NoteBase):
     id: int
     owner_id: int
+    last_edit: Union[datetime, None] = None
 
     class Config:
         orm_mode = True

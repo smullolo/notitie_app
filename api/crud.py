@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
+from sqlalchemy import DateTime
 
 from . import models, schemas, utils
 from fastapi import HTTPException
+from datetime import datetime
 
 
 def get_user(db: Session, user_id: int):
@@ -25,9 +28,12 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-def get_notes(db: Session, current_user_id, skip: int = 0, limit: int = 100):
-    return db.query(models.Note).filter(models.Note.owner_id == current_user_id).offset(skip).limit(limit).all()
-    # return db.query(models.Note).offset(skip).limit(limit).all()
+def get_notes(db: Session, current_user_id, skip: int = 0, limit: int = 100, start_time: datetime = datetime.min,
+              end_time: datetime = datetime.max):
+    return db.query(models.Note).filter(
+        models.Note.owner_id == current_user_id,
+        models.Note.last_edit.between(start_time, end_time)
+    ).offset(skip).limit(limit).all()
 
 
 def update_user_note(db: Session, note: schemas.NoteUpdate, user_id: int, note_id: int):
